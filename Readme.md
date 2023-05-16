@@ -29,9 +29,9 @@ Oba dva algoritmy se musí spustit opakovaně 30x pro každou zkušební funkci 
 
 ### Příklady
 
-1. 30 konvergencí v jednom grafu ![Konvergence](/pictures/Benchmark_ex1_1.png)
-2. Průměrná konvergence ![Evoluce](/pictures/Benchmark_ex1_2.png)
-3. porovnání konvergenčních grafů (zde jsou ještě 3 algoritmy – vy budete mít 2) ![Srovnání evolucí](/pictures/Benchmark_ex1_3.png)
+1. 30 konvergencí v jednom grafu ![Konvergence](./pictures/Benchmark_ex1_1.png)
+2. Průměrná konvergence ![Evoluce](./pictures/Benchmark_ex1_2.png)
+3. porovnání konvergenčních grafů (zde jsou ještě 3 algoritmy – vy budete mít 2) ![Srovnání evolucí](./pictures/Benchmark_ex1_3.png)
 
 ### Berte v úvahu následující
 
