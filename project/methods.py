@@ -1,9 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 KNAPSACK_ITEMS = None
 
 
-def random_search(v, n_iter, objective_func, bounds, minimize=True):
+def random_search(v, n_iter, objective_func, bounds, minimize=True, space="spoj"):
     """
     Performs random search optimization on a given objective function.
     :param v: Starting point for optimization.
@@ -18,7 +19,10 @@ def random_search(v, n_iter, objective_func, bounds, minimize=True):
     best_x.append((v, objective_func(v), 0))
 
     for i in range(n_iter):
-        x_new = np.random.uniform(bounds[0], bounds[1], v.shape)
+        if space == "spoj":
+            x_new = np.random.uniform(bounds[0], bounds[1], v.shape)
+        elif space == "disc":
+            x_new = np.random.randint(0, 2, len(v))
 
         score = objective_func(x_new)
         if (minimize and score < best_x[-1][1]) or (
@@ -28,6 +32,8 @@ def random_search(v, n_iter, objective_func, bounds, minimize=True):
 
         v = x_new
 
+    best_x.append((best_x[-1][0], best_x[-1][1], n_iter))
+    print("Best value (rand dim {}): ".format(str(len(v))), best_x[-1][1])
     return best_x
 
 
@@ -40,6 +46,7 @@ def simulated_annealing(
     temp_target=0.1,
     stdev=0.1,
     bounds=None,
+    minimize=True,
     space="spoj",
 ):
     """
@@ -55,23 +62,29 @@ def simulated_annealing(
     :return:
     """
     v_best = list()
-    v_best.append((v, objective_func(v), 0))
+    v_best.append((v, objective_func(v), temp))
+    FES_counter = 0
     while temp > temp_target:
         for i in range(n_mpolis):
+            FES_counter += 1
             v_local = get_neighbours(space, v, stdev)
             if bounds is not None:
                 v_local = np.clip(v_local, bounds[0], bounds[1])
             delta = objective_func(v_local) - objective_func(v)
+            if not minimize:
+                delta = -delta
             if delta < 0:
                 v = v_local
                 best_val = v_best[-1][1]
                 new_val = objective_func(v_local)
-                if new_val < best_val:
+                if minimize and new_val < best_val or new_val > best_val:
                     v_best.append((v_local, new_val, temp))
             elif np.random.uniform(0, 1) < np.exp(-delta / temp):
                 v = v_local
         temp = temp - f_temp(temp)
 
+    # v_best.append((v_best[-1][0], v_best[-1][1], temp_target))
+    print("Best value (anneal dim {}): ".format(str(v.shape)), v_best[-1][1])
     return v_best
 
 
@@ -124,8 +137,8 @@ def knapsack(v, capacity=100) -> int:
             val += row[0]
             capacity -= row[1]
             if capacity < 0:
-                return 1
-    return -val
+                return -1
+    return val
 
 
 def generate_items(n=30):
@@ -133,7 +146,155 @@ def generate_items(n=30):
     KNAPSACK_ITEMS = np.random.randint(1, 50, (n, 2))
 
 
+def plot_step_rand(vals, title, xlabel, ylabel="Result", reverse=False, logarithmic=False):
+    for i, lst in enumerate(vals):
+        x = []
+        y = []
+        for tup in lst:
+            x.append(tup[2])
+            y.append(tup[1])
+        plt.plot(x, y, label='List {}'.format(i + 1))
+
+    plt.title(title)
+    plt.xlabel(xlabel)
+    if reverse:
+        plt.gca().invert_xaxis()  # invert x-axis
+    if logarithmic:
+        plt.gca().set_yscale('log')
+    plt.ylabel(ylabel)
+    plt.show()
+
+
+def plot_step_anneal(vals, title, xlabel, ylabel="Result", reverse=False, logarithmic_x=False, logarithmic_y=False):
+    fig, ax = plt.subplots()
+
+    for i, lst in enumerate(vals):
+        x = []
+        y = []
+        for tup in lst:
+            x.append(tup[2])
+            y.append(tup[1])
+        if logarithmic_x:
+            threshold = 100  # Adjust the threshold as needed
+            above_threshold = np.array(x) > threshold
+            below_threshold = np.array(x) <= threshold
+
+            ax.plot(np.array(x)[above_threshold], np.array(y)[above_threshold], color=get_color(i))
+            ax.plot(np.array(x)[below_threshold], np.array(y)[below_threshold], color=get_color(i))
+            ax.set_xscale('log')
+            if logarithmic_y:
+                ax.set_yscale('log')
+
+        else:
+            ax.plot(x, y, label='Average')
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    if reverse:
+        ax.invert_xaxis()
+
+    plt.legend()
+    plt.show()
+
+
+def plot_average_anneal(vals, title, xlabel, ylabel="Result", reverse=False, logarithmic_x=False, logarithmic_y=False):
+    help_dictionary_vals = dict()
+    help_dictionary_count = dict()
+    average_values = []
+    iteration_values = []
+
+    temp = 1000
+    while temp > 0.1:
+        iteration_values.append(temp)
+        temp = temp - cooling(temp)
+
+    for lst in vals:
+        for tup in lst:
+            temp = tup[2]
+            value = tup[1]
+            if temp in help_dictionary_vals.keys():
+                help_dictionary_vals[temp] += value
+                help_dictionary_count[temp] += 1
+            else:
+                help_dictionary_vals[temp] = value
+                help_dictionary_count[temp] = 1
+
+    fig, ax = plt.subplots()
+
+    for key in help_dictionary_vals.keys():
+        help_dictionary_vals[key] /= help_dictionary_count[key]
+
+    iteration_values = list(help_dictionary_vals.keys())
+    average_values = list(help_dictionary_vals.values())
+
+    if logarithmic_x:
+        threshold = 100  # Adjust the threshold as needed
+        above_threshold = np.array(iteration_values) > threshold
+        below_threshold = np.array(iteration_values) <= threshold
+
+        ax.plot(np.array(iteration_values)[above_threshold], np.array(average_values)[above_threshold],
+                color=get_color(0))
+        ax.plot(np.array(iteration_values)[below_threshold], np.array(average_values)[below_threshold],
+                color=get_color(0))
+        ax.set_xscale('log')
+        if logarithmic_y:
+            ax.set_yscale('log')
+
+    else:
+        ax.plot(iteration_values, average_values, label='Average')
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    if reverse:
+        ax.invert_xaxis()
+
+    plt.axhline(y=average_values[-1], color='r', linestyle='--')
+    ax.annotate(f'y = {round(average_values[-1], 4)}', xy=(0.5, average_values[-1]), xytext=(0, 20),
+                textcoords='offset points', ha='center', color='r')
+    plt.show()
+
+
+def plot_average_rand(vals, bounds, increment, title, xlabel, ylabel="Result", reverse=False, logarithmic=False):
+    average_values = []
+    iteration_values = []
+    for i in range(bounds[0], bounds[1], increment):
+        iteration_values.append(i)
+        x = 0
+        for lst in vals:
+            for tup in lst:
+                if tup[2] > i:
+                    x += tup[1]
+                    break
+        average_values.append(x / len(vals))
+
+    plt.plot(iteration_values, average_values, label='Average')
+
+    plt.title(title)
+    plt.xlabel(xlabel)
+    if reverse:
+        plt.gca().invert_xaxis()  # invert x-axis
+    if logarithmic:
+        plt.gca().set_yscale('log')
+    plt.ylabel(ylabel)
+    plt.axhline(y=average_values[-1], color='r', linestyle='--')
+    plt.annotate(f'y = {round(average_values[-1], 4)}', xy=(0.5, average_values[-1]), xytext=(0, 20),
+                textcoords='offset points', ha='center', color='r')
+    plt.show()
+
+
+def get_color(i):
+    color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    return color_cycle[i % len(color_cycle)]
+
+
 if __name__ == "__main__":
+    FES = 20000
+    METROPOLIS_ITER = 10
+
     dejong_random = dict()
     dejong_annealing = dict()
     dejong2_random = dict()
@@ -141,56 +302,107 @@ if __name__ == "__main__":
     schwefel_random = dict()
     schwefel_annealing = dict()
 
-    if False:
-        for d in [5, 10]:
-            dejong_random[d] = list()
-            dejong_annealing[d] = list()
-            dejong2_random[d] = list()
-            dejong2_annealing[d] = list()
-            schwefel_random[d] = list()
-            schwefel_annealing[d] = list()
+    for d in [5, 10]:
+        dejong_random[d] = list()
+        dejong_annealing[d] = list()
+        dejong2_random[d] = list()
+        dejong2_annealing[d] = list()
+        schwefel_random[d] = list()
+        schwefel_annealing[d] = list()
 
-            for _ in range(30):
-                vector1 = np.random.uniform(-50, 50, d)
-                vector2 = np.random.uniform(0, 1000, d)
+        for _ in range(30):
+            vector1 = np.random.uniform(-5, 5, d)
+            vector2 = np.random.uniform(-500, 500, d)
 
-                dejong_random[d].append(
-                    random_search(vector1, 10000, dejong, (-50, 50))
+            dejong_random[d].append(
+                random_search(vector1, FES, dejong, (-5, 5))
+            )
+            dejong_annealing[d].append(
+                simulated_annealing(
+                    vector1, METROPOLIS_ITER, FES/METROPOLIS_ITER, dejong, cooling, 0.0001, 0.45, (-5, 5)
                 )
-                dejong_annealing[d].append(
-                    simulated_annealing(
-                        vector1, 10, 1000, dejong, cooling, 0.01, 0.5, (-50, 50)
-                    )
-                )
+            )
+
+            if False:
                 dejong2_random[d].append(
-                    random_search(vector1, 10000, dejong2, (-50, 50))
+                    random_search(vector1, FES, dejong2, (-5, 5))
                 )
                 dejong2_annealing[d].append(
                     simulated_annealing(
-                        vector1, 10, 1000, dejong2, cooling, 0.01, 0.5, (-50, 50)
+                        vector1, METROPOLIS_ITER, FES/METROPOLIS_ITER, dejong2, cooling,  0.0001, 0.05, (-5, 5)
                     )
                 )
+
+            if False:
                 schwefel_random[d].append(
-                    random_search(vector2, 10000, schwefel, (0, 1000))
+                    random_search(vector2, FES, schwefel, (-500, 500))
                 )
                 schwefel_annealing[d].append(
                     simulated_annealing(
-                        vector2, 10, 1000, schwefel, cooling, 0.01, 0.5, (0, 1000)
+                        vector2, METROPOLIS_ITER, FES/METROPOLIS_ITER, schwefel, cooling,  0.001, 0.25, (-500, 500)
                     )
                 )
 
+    for d in [5, 10]:
+        plot_step_rand(dejong_random[d], "De Jong 1 - Random Search - D" + str(d), "Iteration", logarithmic=True)
+        plot_step_anneal(dejong_annealing[d], "De Jong 1 - Simulated Annealing - D" + str(d), "Temperature",
+                         logarithmic_x=True, reverse=True)
+        plot_average_rand(dejong_random[d], (0, FES, 10), 100, "De Jong 1 - Average - Random Search - D" + str(d),
+                          "Iteration", logarithmic=True)
+        plot_average_anneal(dejong_annealing[d], "De Jong 1 - Average - Simulated Annealing - D" + str(d),
+                            "Temperature", reverse=True, logarithmic_x=True)
+
+        if False:
+            plot_step_rand(dejong2_random[d], "De Jong 2 - Random Search - D" + str(d), "Iteration", logarithmic=True)
+            plot_step_anneal(dejong2_annealing[d], "De Jong 2 - Simulated Annealing - D" + str(d), "Temperature",
+                             reverse=True, logarithmic_x=True, logarithmic_y=True)
+            plot_average_rand(dejong2_random[d], (0, FES, 10), 100, "De Jong 2 - Average - Random Search - D" + str(d),
+                              "Iteration", "Iteration", logarithmic=True)
+            plot_average_anneal(dejong2_annealing[d], "De Jong 2 - Average - Simulated Annealing - D" + str(d),
+                            "Temperature", reverse=True, logarithmic_x=True)
+
+        if False:
+            plot_step_rand(schwefel_random[d], "Schwefel - Random Search - D" + str(d), "Iteration", logarithmic=True)
+            plot_step_anneal(schwefel_annealing[d], "Schwefel - Simulated Annealing - D" + str(d), "Temperature",
+                             reverse=True, logarithmic=True)
+            plot_average_rand(schwefel_random[d], (0, 10000, 10), 100, "Schwefel - Average - Random Search - D" + str(d),
+                              "Iteration", logarithmic=True)
+            plot_average_anneal(schwefel_annealing[d], "Schwefel - Average - Simulated Annealing - D" + str(d),
+                                "Temperature", reverse=True, logarithmic=True)
+
+
     knapsack_heuristic = dict()
+    knapsack_random = dict()
 
     for d in [15, 30, 50]:
         knapsack_heuristic[d] = list()
+        knapsack_random[d] = list()
 
         for _ in range(10):
             generate_items(d)
             knapsack_heuristic[d].append(
                 simulated_annealing(
-                    [0] * d, 10, 40 * d, knapsack, cooling, 0.01, 0.5, (0, 1), "disc"
+                    [0] * d,
+                    METROPOLIS_ITER,
+                    40 * d,
+                    knapsack,
+                    cooling,
+                    0.01,
+                    0.5,
+                    (0, 1),
+                    False,
+                    "disc",
                 )
             )
+            knapsack_random[d].append(
+                random_search([0] * d, 400 * d, knapsack, (0, 1), False, "disc")
+            )
+
+    for d in [15, 30, 50]:
+        plot_step_rand(knapsack_heuristic[d], "Knapsack - Simulated Annealing - D" + str(d), "Temperature", reverse=True)
+        plot_step_rand(knapsack_random[d], "Knapsack - Random Search - D" + str(d), "Iteration")
+        plot_average_anneal(knapsack_heuristic[d], "Knapsack - Simulated Annealing - D" + str(d), "Temperature", reverse=True)
+        plot_average_anneal(knapsack_random[d], "Knapsack - Random Search - D" + str(d), "Iteration")
 
     print("Konec")
     quit()
