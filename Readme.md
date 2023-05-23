@@ -83,7 +83,7 @@ Podobná situace, ale přítomnost "sedel" vyžaduje větší skoky, aby byl ann
 schopný vyšplhat z lokálního minima. Ty jsou ale v závěru zase zmenšeny, aby se nadrobno mohlo dohledat minimum.
 Z testování vyplynulo, že nejvodnější způsob chlazení je zase poměrový.
 
-Jak u dim 5 tak i 10 je vidět, že pro některé běhy annealingu uvázne alg. u lokálního minima.
+Jak u dim 5 tak i 10 je vidět, že pro většinu běhu annealing v lok. minimu uvázne.
  
 Parametry:
 
@@ -170,12 +170,19 @@ Parametry:
 
 ```python
 - FES = 20000
-- temp_target = 0.00001
-- temp_init = 1000
-- metropolis_n = 20
-- std = lambda temp: 2.5 * (1.5 - temp / temp_init) + 0.5
-- cooling = lambda temp: temp / (1 + temp * 0.989)
+- temp_target = 0.0001
+- temp_init = 2000
+- metropolis_n = 10
+- std = deviation_adaptive
+- cooling = lambda temp: temp - temp * 0.99163
 - bounds = [-500, 500]
+
+def deviation_adaptive(temp):
+    if temp > 500:
+        return 2.5
+    if temp > 1:
+        return 0.85
+    return 0.25
 ```
 
 #### Dimenze 5
@@ -207,8 +214,6 @@ Standard Deviation: 225.12283358746026
 ```
 
 #### Dimenze 10
-
-V dimenzi 10 podává annealing průměrně lepší výsledek, seč jen o trochu.
 
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d10_schwefel_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d10_schwefel_anneal_g.png)
@@ -250,11 +255,11 @@ Parametry:
 - temp_init = 1200
 - metropolis_n = 2 * dim / 3
 - uniform distribution (0, 1)
-- cooling =  temp - temp * 0.9735  
+- cooling =  lambda temp: temp - temp * 0.9735
 - bounds = [0, 1]
 ```
 
-### Dimenze 15
+### Dimenze 15 (poč. předmětů)
 
 ![D5RandomDJ1](pictures/knapsack/d15_knapsack_rand_g.png) 
 ![D5RandomDJ1](pictures/knapsack/d15_knapsack_anneal_g.png) 
