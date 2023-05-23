@@ -90,7 +90,6 @@ def simulated_annealing(
         temp = temp - f_temp(temp)
 
     v_best.append((v_best[-1][0], v_best[-1][1], temp_target))
-    print("FES: ", fes_counter)
     return v_best
 
 
@@ -114,8 +113,7 @@ def cooling_exp(temp):
 
 
 def cooling_knapsack(temp):
-    threshold = 0.975 + (1 - 0.975) * min((FES - 6000) / 12000, 0.65)
-    return temp - temp * threshold
+    return temp - temp * 0.9735
 
 
 def cooling_adaptive(temp):
@@ -254,10 +252,8 @@ def plot_average_anneal(vals, title, temp_f, xlabel, ylabel="Result", reverse=Fa
         last_index = -1
         for temp in iteration_values:
             if temp in lst_temps:
-                last_index = lst_temps.index(temp)
-                help_dictionary_vals[temp] += lst[last_index][1]
-            else:
-                help_dictionary_vals[temp] += lst[last_index][1]
+                last_index = len(lst_temps) - 1 - lst_temps[::-1].index(temp)  # index of last value at temp
+            help_dictionary_vals[temp] += lst[last_index][1]
 
     fig, ax = plt.subplots()
 
@@ -331,13 +327,30 @@ def get_color(i):
     return color_cycle[i % len(color_cycle)]
 
 
+def print_stats(vals, title):
+    data = [t[-1][1] for t in vals]
+
+    minimum = np.min(data)
+    maximum = np.max(data)
+    mean = np.mean(data)
+    median = np.median(data)
+    std_dev = np.std(data)
+
+    print("\n" + title)
+    print(f"Minimum: {minimum}")
+    print(f"Maximum: {maximum}")
+    print(f"Mean: {mean}")
+    print(f"Median: {median}")
+    print(f"Standard Deviation: {std_dev}\n")
+
+
 if __name__ == "__main__":
 
     methods_to_run = [
         # "dejong1",
         # "dejong2",
-        "schwefel",
-        # "knapsack"
+        # "schwefel",
+        "knapsack"
     ]
 
     dejong_random = dict()
@@ -348,7 +361,7 @@ if __name__ == "__main__":
     schwefel_annealing = dict()
 
     dejong1_stdev = lambda x: 0.01
-    dejong2_stdev = deviation_adaptive2  # lambda x: 0.02
+    dejong2_stdev = deviation_adaptive2
     schwefel_stdev = deviation_adaptive
 
     INIT_TEMP = FES / METROPOLIS_ITER
@@ -378,13 +391,12 @@ if __name__ == "__main__":
                 )
                 dejong2_annealing[d].append(
                     simulated_annealing(
-                        vector1, METROPOLIS_ITER, INIT_TEMP, dejong2, cooling_exp, TARGET_TEMP, dejong2_stdev,
-                        (-5, 5)
+                        vector1, METROPOLIS_ITER, INIT_TEMP, dejong2, cooling_exp, TARGET_TEMP, dejong2_stdev, (-5, 5)
                     )
                 )
 
     if "schwefel" in methods_to_run:
-        for d in [5, 10, 12]:
+        for d in [5, 10]:
             schwefel_random[d] = list()
             schwefel_annealing[d] = list()
 
@@ -403,29 +415,40 @@ if __name__ == "__main__":
 
     for d in [5, 10]:
         if "dejong1" in methods_to_run:
+            print_stats(dejong_random[d], "De Jong 1 - Stats - Random Search - D" + str(d))
+            print_stats(dejong_annealing[d], "De Jong 1 - Stats - Simulated Annealing - D" + str(d))
+
             plot_step_rand(dejong_random[d], "De Jong 1 - Random Search - D" + str(d), "Iteration", logarithmic=True)
             plot_step_anneal(dejong_annealing[d], "De Jong 1 - Simulated Annealing - D" + str(d), "Temperature",
                              logarithmic_x=True, reverse=True)
+
             plot_average_rand(dejong_random[d], (0, FES, 10), 100, "De Jong 1 - Average - Random Search - D" + str(d),
                               "Iteration", logarithmic=True)
             plot_average_anneal(dejong_annealing[d], "De Jong 1 - Average - Simulated Annealing - D" + str(d),
                                 cooling_exp, "Temperature", reverse=True, logarithmic_x=True)
 
         if "dejong2" in methods_to_run:
+            print_stats(dejong2_random[d], "De Jong 2 - Stats - Random Search - D" + str(d))
+            print_stats(dejong2_annealing[d], "De Jong 2 - Stats - Simulated Annealing - D" + str(d))
+
             plot_step_rand(dejong2_random[d], "De Jong 2 - Random Search - D" + str(d), "Iteration", logarithmic=True)
             plot_step_anneal(dejong2_annealing[d], "De Jong 2 - Simulated Annealing - D" + str(d), "Temperature",
                              reverse=True, logarithmic_x=True, logarithmic_y=True)
+
             plot_average_rand(dejong2_random[d], (0, FES, 10), 100, "De Jong 2 - Average - Random Search - D" + str(d),
                               "Iteration", "Iteration", logarithmic=True)
             plot_average_anneal(dejong2_annealing[d], "De Jong 2 - Average - Simulated Annealing - D" + str(d),
                                 cooling_exp, "Temperature", reverse=True, logarithmic_x=True, logarithmic_y=True)
 
         if "schwefel" in methods_to_run:
+            print_stats(schwefel_random[d], "Schwefel - Stats - Random Search - D" + str(d))
+            print_stats(schwefel_annealing[d], "Schwefel - Stats - Simulated Annealing - D" + str(d))
+
             plot_step_rand(schwefel_random[d], "Schwefel - Random Search - D" + str(d), "Iteration")
             plot_step_anneal(schwefel_annealing[d], "Schwefel - Simulated Annealing - D" + str(d), "Temperature",
                              reverse=True)
-            plot_average_rand(schwefel_random[d], (0, FES, 10), 100,
-                              "Schwefel - Average - Random Search - D" + str(d),
+
+            plot_average_rand(schwefel_random[d], (0, FES, 10), 100, "Schwefel - Average - Random Search - D" + str(d),
                               "Iteration")
             plot_average_anneal(schwefel_annealing[d], "Schwefel - Average - Simulated Annealing - D" + str(d),
                                 cooling_exp, "Temperature", reverse=True)
@@ -438,10 +461,11 @@ if __name__ == "__main__":
             knapsack_heuristic[d] = list()
             knapsack_random[d] = list()
             FES = 400 * d
-            INIT_TEMP = FES / METROPOLIS_ITER
+            INIT_TEMP = 1200
+            METROPOLIS_ITER = int(2 * d / 3)
+            generate_items(d)
 
             for _ in range(10):
-                generate_items(d)
                 knapsack_heuristic[d].append(
                     simulated_annealing(
                         [0] * d,
@@ -461,15 +485,18 @@ if __name__ == "__main__":
                 )
 
         for d in [15, 30, 50]:
-            INIT_TEMP = 40 * d
             FES = 400 * d
+            print_stats(knapsack_random[d], "Knapsack - Stats - Random Search - D" + str(d))
+            print_stats(knapsack_heuristic[d], "Knapsack - Stats - Simulated Annealing - D" + str(d))
+
+            plot_step_rand(knapsack_random[d], "Knapsack - Random Search - D" + str(d), "Iteration")
             plot_step_anneal(knapsack_heuristic[d], "Knapsack - Simulated Annealing - D" + str(d), "Temperature",
                              reverse=True)
-            plot_step_rand(knapsack_random[d], "Knapsack - Random Search - D" + str(d), "Iteration")
-            plot_average_anneal(knapsack_heuristic[d], "Knapsack - Average - Simulated Annealing - D" + str(d),
-                                cooling_knapsack, "Temperature", reverse=True)
+
             plot_average_rand(knapsack_random[d], (0, 400 * d, 10), d, "Knapsack - Average - Random Search - D" + str(d),
                               "Iteration")
+            plot_average_anneal(knapsack_heuristic[d], "Knapsack - Average - Simulated Annealing - D" + str(d),
+                                cooling_knapsack, "Temperature", reverse=True)
 
     print("Konec")
     quit()
