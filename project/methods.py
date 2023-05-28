@@ -412,10 +412,10 @@ def print_stats(vals, title):
 if __name__ == "__main__":
 
     methods_to_run = [
-        "dejong1",
+        # "dejong1",
         # "dejong2",
         # "schwefel",
-        # "knapsack"
+        "knapsack"
     ]
 
     dejong_random = dict()
@@ -473,7 +473,7 @@ if __name__ == "__main__":
                 )
                 schwefel_annealing[d].append(
                     simulated_annealing(
-                        vector2, METROPOLIS_ITER, INIT_TEMP, schwefel, cooling_exp, TARGET_TEMP, None,
+                        vector2, METROPOLIS_ITER, INIT_TEMP, schwefel, cooling_linear, TARGET_TEMP, None,
                         (-500, 500)
                     )
                 )
@@ -526,7 +526,7 @@ if __name__ == "__main__":
             print_stats(schwefel_annealing[d], "Schwefel - Stats - Simulated Annealing - D" + str(d))
 
             plot_step_rand(schwefel_random[d], "Schwefel - Random Search - D" + str(d), "Iteration")
-            plot_step_anneal(schwefel_annealing[d], "Schwefel - Simulated Annealing - D" + str(d), cooling_exp,
+            plot_step_anneal(schwefel_annealing[d], "Schwefel - Simulated Annealing - D" + str(d), cooling_linear,
                              "Temperature",
                              reverse=True)
 
@@ -535,7 +535,7 @@ if __name__ == "__main__":
                                                              "Iteration")
             avg_anneal_iter, avg_anneal_vals = plot_average_anneal(schwefel_annealing[d],
                                                                    "Schwefel - Average - Simulated Annealing - D"
-                                                                   + str(d), cooling_exp, "Temperature", reverse=True)
+                                                                   + str(d), cooling_linear, "Temperature", reverse=True)
 
             avg_comb = [(avg_rand_iter, avg_rand_vals, "Random Search - avg"),
                         (avg_anneal_iter, avg_anneal_vals, "Simulated Annealing - avg")]

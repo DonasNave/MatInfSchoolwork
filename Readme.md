@@ -16,7 +16,7 @@ Parametry:
 - temp_init = 2000
 - metropolis_n = 10
 - std = 0.01
-- cooling = lambda temp: temp - temp * 0.99163
+- cooling = lambda temp: temp - temp * 0.984
 - bounds = [-5, 5]
 ```
 
@@ -28,25 +28,26 @@ Parametry:
 ![D5RandomDJ1](pictures/benchmarks/dejong1/d5_dej1_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/dejong1/d5_dej1_avg_anneal_g.png)
 
+![D5RandomDJ1](pictures/benchmarks/dejong1/d5_dej1_avg_comb_g.png)
 
 ```text
 De Jong 1 - Stats - Random Search - D5
-Minimum: 0.20944927045528083
-Maximum: 1.5695613430879192
-Mean: 0.8045078025590391
-Median: 0.795472353163114
-Standard Deviation: 0.34076004380968034
+Minimum: 0.22517357665822718
+Maximum: 1.7122778814960458
+Mean: 0.8296874558940225
+Median: 0.8224455223032716
+Standard Deviation: 0.3315816939607791
 ```
 
 VS
 
 ```text
 De Jong 1 - Stats - Simulated Annealing - D5
-Minimum: 2.5934917596988985e-05
-Maximum: 0.0004494675138954939
-Mean: 0.00015831745965888108
-Median: 0.00014626719326912537
-Standard Deviation: 9.113264932917041e-05
+Minimum: 2.766679298903919e-05
+Maximum: 0.00034502196055047633
+Mean: 0.0001628164815149763
+Median: 0.00016398412263585502
+Standard Deviation: 7.413491973193259e-05
 ```
 
 #### Dimenze 10
@@ -57,24 +58,26 @@ Standard Deviation: 9.113264932917041e-05
 ![D5RandomDJ1](pictures/benchmarks/dejong1/d10_dej1_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/dejong1/d10_dej1_avg_anneal_g.png)
 
+![D5RandomDJ1](pictures/benchmarks/dejong1/d10_dej1_avg_comb_g.png)
+
 ```text
 De Jong 1 - Stats - Random Search - D10
-Minimum: 6.478571449663781
-Maximum: 14.354361813627015
-Mean: 10.64107086202358
-Median: 10.715540821947378
-Standard Deviation: 2.004303947294363
+Minimum: 4.8494922230174105
+Maximum: 13.937777488705152
+Mean: 10.341127982109432
+Median: 10.217839812053295
+Standard Deviation: 2.1277805164439805
 ```
 
 VS
 
 ```text
 De Jong 1 - Stats - Simulated Annealing - D10
-Minimum: 9.678184039336131e-05
-Maximum: 0.0008564815773672686
-Mean: 0.0004420558786349618
-Median: 0.00042986281885357353
-Standard Deviation: 0.0002011513531024227
+Minimum: 0.00013337222732238337
+Maximum: 0.0008870717964375043
+Mean: 0.0004384625347050692
+Median: 0.0004713043072484819
+Standard Deviation: 0.0001730184780874394
 ```
 
 ### Dejong2
@@ -90,10 +93,10 @@ Parametry:
 ```python
 - FES = 20000
 - temp_target = 0.0001
-- temp_init = 2000
-- metropolis_n = 10
+- temp_init = 1000
+- metropolis_n = 20
 - std = devitation_adaptive2
-- cooling = lambda temp: temp - temp * 0.99163
+- cooling = lambda temp: temp - temp * 0.984
 - bounds = [-5, 5]
 
 def devitation_adaptive2(temp):
@@ -112,24 +115,26 @@ def devitation_adaptive2(temp):
 ![D5RandomDJ1](pictures/benchmarks/dejong2/d5_dej2_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/dejong2/d5_dej2_avg_anneal_g.png)
 
+![D5RandomDJ1](pictures/benchmarks/dejong2/d5_dej2_avg_comb_g.png)
+
 ```text
 De Jong 2 - Stats - Random Search - D5
-Minimum: 21.841840729771782
-Maximum: 133.59858086487546
-Mean: 70.94915636658169
-Median: 68.93152022259738
-Standard Deviation: 29.93222484440285
+Minimum: 16.275723738956117
+Maximum: 114.46302840383072
+Mean: 57.769738476698286
+Median: 56.959010385331496
+Standard Deviation: 24.182548507985175
 ```
 
 VS
 
 ```text
 De Jong 2 - Stats - Simulated Annealing - D5
-Minimum: 0.0005790711200341866
-Maximum: 4.579077615435204
-Mean: 0.583976465909145
-Median: 0.040626383360990365
-Standard Deviation: 1.3976553518062733
+Minimum: 0.0004994566944266223
+Maximum: 5.279813474070098
+Mean: 0.48636243798152395
+Median: 0.03404479264159451
+Standard Deviation: 1.3572815802391134
 ```
 
 #### Dimenze 10
@@ -140,49 +145,44 @@ Standard Deviation: 1.3976553518062733
 ![D5RandomDJ1](pictures/benchmarks/dejong2/d10_dej2_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/dejong2/d10_dej2_avg_anneal_g.png)
 
+![D5RandomDJ1](pictures/benchmarks/dejong2/d10_dej2_avg_comb_g.png)
+
 ```text
 De Jong 2 - Stats - Random Search - D10
-Minimum: 560.705193870015
-Maximum: 4052.354972645974
-Mean: 2323.2950804164952
-Median: 2262.6546767349846
-Standard Deviation: 985.392450028147
+Minimum: 644.1287162122458
+Maximum: 4284.643292017868
+Mean: 2284.760420575056
+Median: 2077.8790887980576
+Standard Deviation: 967.4509923856659
 ```
 
 VS
 
 ```text
 De Jong 2 - Stats - Simulated Annealing - D10
-Minimum: 0.06479416843296353
-Maximum: 5.22988110231445
-Mean: 1.6109761632767439
-Median: 1.1735263386385797
-Standard Deviation: 1.2673718176696105
+Minimum: 0.11279200041126061
+Maximum: 4.773072247166481
+Mean: 1.6605061647251247
+Median: 1.274276120412463
+Standard Deviation: 1.3787749043508917
 ```
 
 ### Schwefel
 
-Pro schwefel byl výsledek podstatně horší, žádná iterace se nedostala k minimu, 
-Úprava parametrů/analýza průběhu nepomohla výsledek příliš zlepšit. Pro dim5 dokonce random search annealing překonal v
-mean hodnotě.
+Pro schwefel bylo potřeba kvůli tvaru benchmark fce a velikosti prostoru
+vycházet při norm.dist z poměru velikosti prostoru. Zároveň nebylo vhodné rychle
+přejít do hledání minima, takže chlazení lineární.
 
 Parametry:
 
 ```python
 - FES = 20000
 - temp_target = 0.0001
-- temp_init = 2000
-- metropolis_n = 10
-- std = deviation_adaptive
-- cooling = lambda temp: temp - temp * 0.99163
+- temp_init = 1000
+- metropolis_n = 20
+- std = norm.dist 10% prostoru
+- cooling = lambda temp: temp / (1 + temp * 0.995)
 - bounds = [-500, 500]
-
-def deviation_adaptive(temp):
-    if temp > 500:
-        return 2.5
-    if temp > 1:
-        return 0.85
-    return 0.25
 ```
 
 #### Dimenze 5
@@ -195,22 +195,22 @@ def deviation_adaptive(temp):
 
 ```text
 Schwefel - Stats - Random Search - D5
-Minimum: -1855.2159377794003
-Maximum: -1473.8360360060885
-Mean: -1662.4612583137648
-Median: -1671.3598567053045
-Standard Deviation: 103.14046461599558
+Minimum: -1892.3683488673316
+Maximum: -1536.2494993348207
+Mean: -1675.57489587996
+Median: -1649.505594251017
+Standard Deviation: 93.37609081156974
 ```
 
 VS
 
 ```text
 Schwefel - Stats - Simulated Annealing - D5
-Minimum: -1542.1957590309057
-Maximum: -693.2464146166012
-Mean: -1093.5871989296872
-Median: -1058.505801900886
-Standard Deviation: 225.12283358746026
+Minimum: -2072.2307096747522
+Maximum: -971.8514703943413
+Mean: -1496.2752805605712
+Median: -1473.5442215640933
+Standard Deviation: 250.4479140187846
 ```
 
 #### Dimenze 10
@@ -223,22 +223,22 @@ Standard Deviation: 225.12283358746026
 
 ```text
 Schwefel - Stats - Random Search - D10
-Minimum: -2928.9473855825463
-Maximum: -2113.858854789854
-Mean: -2419.813988114735
-Median: -2434.759739328956
-Standard Deviation: 191.86752419483057
+Minimum: -2731.6308857130953
+Maximum: -2138.2215688002807
+Mean: -2410.0254694485984
+Median: -2390.966748428341
+Standard Deviation: 153.8040028809002
 ```
 
 VS
 
 ```text
 Schwefel - Stats - Simulated Annealing - D10
-Minimum: -3378.9735292221594
-Maximum: -1461.92396800152
-Mean: -2301.110610178808
-Median: -2342.5108397206463
-Standard Deviation: 383.02949756081324
+Minimum: -3306.816179927907
+Maximum: -1956.2912061081377
+Mean: -2852.9755201166486
+Median: -2940.8468915150142
+Standard Deviation: 377.79837975585446
 ```
 
 ## Knapsack úloha
@@ -246,6 +246,9 @@ Standard Deviation: 383.02949756081324
 Nejlepší výsledky podává poměrné chlazení a zvyšování metropolise v poměru k dimenzi. Překvapivě
 testování s větší pravděpodobností k změně při vyšší teplotě nedosáhlo lepších výsledků
 (ani s lineárním chlazením).
+
+Annealing je lepší ve všech případech. Vyhovující je chování při nízké teplotě, kdy se chytne nějakého stavu baťohu
+a hledá "maximum" lokálně při současném uspořádání.
 
 Parametry:
 
@@ -265,26 +268,28 @@ Parametry:
 ![D5RandomDJ1](pictures/knapsack/d15_knapsack_anneal_g.png) 
 
 ![D5RandomDJ1](pictures/knapsack/d15_knapsack_avg_rand_g.png) 
-![D5RandomDJ1](pictures/knapsack/d15_knapsack_avg_anneal_g.png)  
+![D5RandomDJ1](pictures/knapsack/d15_knapsack_avg_anneal_g.png)
+
+![D5RandomDJ1](pictures/knapsack/d15_knapsack_avg_comb_g.png) 
 
 ```text
 Knapsack - Stats - Random Search - D15
-Minimum: 131
-Maximum: 146
-Mean: 142.9
-Median: 145.0
-Standard Deviation: 4.3
+Minimum: 192
+Maximum: 202
+Mean: 196.8
+Median: 197.5
+Standard Deviation: 3.1559467676119
 ```
 
 VS
 
 ```text
 Knapsack - Stats - Simulated Annealing - D15
-Minimum: 146
-Maximum: 146
-Mean: 146.0
-Median: 146.0
-Standard Deviation: 0.0
+Minimum: 199
+Maximum: 202
+Mean: 201.4
+Median: 202.0
+Standard Deviation: 1.2
 ```
 
 ### Dimenze 30
@@ -293,26 +298,28 @@ Standard Deviation: 0.0
 ![D5RandomDJ1](pictures/knapsack/d30_knapsack_anneal_g.png) 
 
 ![D5RandomDJ1](pictures/knapsack/d30_knapsack_avg_rand_g.png) 
-![D5RandomDJ1](pictures/knapsack/d30_knapsack_avg_anneal_g.png)  
+![D5RandomDJ1](pictures/knapsack/d30_knapsack_avg_anneal_g.png) 
+
+![D5RandomDJ1](pictures/knapsack/d30_knapsack_avg_comb_g.png) 
 
 ```text
 Knapsack - Stats - Random Search - D30
-Minimum: 337
-Maximum: 413
-Mean: 372.3
-Median: 366.0
-Standard Deviation: 20.61577066228668
+Minimum: 345
+Maximum: 371
+Mean: 360.4
+Median: 364.5
+Standard Deviation: 8.76584280032445
 ```
 
 VS
 
 ```text
 Knapsack - Stats - Simulated Annealing - D30
-Minimum: 458
-Maximum: 487
-Mean: 481.1
-Median: 487.0
-Standard Deviation: 8.904493247793498
+Minimum: 424
+Maximum: 442
+Mean: 436.2
+Median: 439.0
+Standard Deviation: 6.867313885355759
 ```
 
 ### Dimenze 50
@@ -321,24 +328,26 @@ Standard Deviation: 8.904493247793498
 ![D5RandomDJ1](pictures/knapsack/d50_knapsack_anneal_g.png) 
 
 ![D5RandomDJ1](pictures/knapsack/d50_knapsack_avg_rand_g.png) 
-![D5RandomDJ1](pictures/knapsack/d50_knapsack_avg_anneal_g.png)  
+![D5RandomDJ1](pictures/knapsack/d50_knapsack_avg_anneal_g.png) 
+
+![D5RandomDJ1](pictures/knapsack/d50_knapsack_avg_comb_g.png) 
 
 ```text
 Knapsack - Stats - Random Search - D50
-Minimum: 464
-Maximum: 515
-Mean: 500.1
-Median: 507.0
-Standard Deviation: 15.423683088030563
+Minimum: 546
+Maximum: 632
+Mean: 599.7
+Median: 603.0
+Standard Deviation: 23.765731631910683
 ```
 
 VS
 
 ```text
 Knapsack - Stats - Simulated Annealing - D50
-Minimum: 704
-Maximum: 734
-Mean: 723.5
-Median: 726.0
-Standard Deviation: 7.592759709091286
+Minimum: 776
+Maximum: 790
+Mean: 784.8
+Median: 785.0
+Standard Deviation: 4.534313619501853
 ```
