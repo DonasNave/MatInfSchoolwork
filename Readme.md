@@ -1,5 +1,49 @@
 # ZÁPOČTOVÝ ÚKOL DO MATEMATICKÉ INFORMATIKY
 
+## Výsledné tabulky
+
+### Benchmarking
+
+#### Dejong1
+
+| Dim | Alg |    Min     |    Max    |   Mean    |  Median   |   Stdev    |
+|:---:|:---:|:----------:|:---------:|:---------:|:---------:|:----------:|
+|  5  | RS  |  0.225174  | 1.712278  | 0.829687  | 0.822446  |  0.331582  |
+|  5  | SA  | 2.7667e-05 | 0.000345  | 0.000162  | 0.000164  | 7.4135e-05 |
+| 10  | RS  |  4.849492  | 13.937777 | 10.341128 | 10.217840 |  2.127781  |
+| 10  | SA  |  0.000133  | 0.000887  | 0.000438  | 0.000471  |  0.000173  |
+
+#### Dejong2
+
+| Dim | Alg |    Min     |     Max     |    Mean     |   Median    |   Stdev    |
+|:---:|:---:|:----------:|:-----------:|:-----------:|:-----------:|:----------:|
+|  5  | RS  | 16.275724  | 114.463028  |  57.769738  |  56.959010  | 24.182549  |
+|  5  | SA  |  0.000499  |  5.279813   |  0.486362   |  0.034044   |  1.357281  |
+| 10  | RS  | 644.128716 | 4284.643292 | 2284.760421 | 2077.879089 | 967.450992 |
+| 10  | SA  |  0.112792  |  4.773072   |  1.660506   |  1.274276   |  1.378775  |
+
+#### Schwefel
+
+| Dim | Alg |     Min      |     Max      |     Mean     |    Median    |   Stdev    |
+|:---:|:---:|:------------:|:------------:|:------------:|:------------:|:----------:|
+|  5  | RS  | -1892.368349 | -1536.249499 | -1675.574896 | -1649.505594 | 093.376091 |
+|  5  | SA  | -2072.230710 | -971.851470  | -1496.275281 | -1473.544222 | 250.447914 |
+| 10  | RS  | -2731.630885 | -2138.221569 | -2410.025470 | -2390.966748 | 153.804002 |
+| 10  | SA  | -3306.816179 | -1956.291206 | -2852.975520 | -2940.846891 | 377.798379 |
+
+
+#### Praktická - knapsack
+
+| Dim | Alg | Min | Max | Mean  | Median |   Stdev   |
+|:---:|:---:|:---:|:---:|:-----:|:------:|:---------:|
+| 15  | RS  | 192 | 202 | 196.8 | 197.5  | 3.155947  |
+| 15  | SA  | 199 | 202 | 201.4 | 202.0  |    1.2    |
+| 30  | RS  | 345 | 371 | 360.4 | 364.5  | 8.765843  |
+| 30  | SA  | 424 | 442 | 436.2 | 439.0  | 6.867314  |
+| 50  | RS  | 546 | 632 | 559.7 | 603.0  | 23.765732 |
+| 50  | SA  | 776 | 790 | 784.8 | 785.0  | 4.534314  |
+
+
 ## Benchmarking úloha
 
 ### Dejong1
@@ -193,6 +237,8 @@ Parametry:
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d5_schwefel_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d5_schwefel_avg_anneal_g.png)
 
+![D5RandomDJ1](pictures/benchmarks/schwefel/d5_schwefel_avg_comb_g.png)
+
 ```text
 Schwefel - Stats - Random Search - D5
 Minimum: -1892.3683488673316
@@ -220,6 +266,8 @@ Standard Deviation: 250.4479140187846
 
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d10_schwefel_avg_rand_g.png)
 ![D5RandomDJ1](pictures/benchmarks/schwefel/d10_schwefel_avg_anneal_g.png)
+
+![D5RandomDJ1](pictures/benchmarks/schwefel/d10_schwefel_avg_comb_g.png)
 
 ```text
 Schwefel - Stats - Random Search - D10
